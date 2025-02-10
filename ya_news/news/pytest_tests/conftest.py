@@ -6,6 +6,11 @@ from django.utils import timezone
 from yanews import settings
 
 
+@pytest.fixture(autouse=True)
+def use_db(db):
+    pass
+
+
 @pytest.fixture
 def author(django_user_model):
     return django_user_model.objects.create(username='author')

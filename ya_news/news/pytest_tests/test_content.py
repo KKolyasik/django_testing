@@ -4,7 +4,6 @@ from news.forms import CommentForm
 from yanews import settings
 
 
-@pytest.mark.django_db
 def test_news_count(client, many_news):
     response = client.get(reverse('news:home'))
     object_list = response.context['object_list']
@@ -12,7 +11,6 @@ def test_news_count(client, many_news):
     assert news_count == settings.NEWS_COUNT_ON_HOME_PAGE
 
 
-@pytest.mark.django_db
 def test_news_order(client, many_news):
     response = client.get(reverse('news:home'))
     object_list = response.context['object_list']
@@ -21,7 +19,6 @@ def test_news_order(client, many_news):
     assert all_dates == sorted_dates
 
 
-@pytest.mark.django_db
 def test_comments_order(author_client, news, many_comments):
     response = author_client.get(reverse('news:detail', args=(news.pk,)))
     assert 'news' in response.context
@@ -32,7 +29,6 @@ def test_comments_order(author_client, news, many_comments):
     assert all_timestamps == sorted_timestamps
 
 
-@pytest.mark.django_db
 @pytest.mark.parametrize(
     'parametrzied_client, has_form',
     (

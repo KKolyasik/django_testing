@@ -1,11 +1,9 @@
-import pytest
 from django.urls import reverse
 from pytest_django.asserts import assertRedirects
 from news.models import Comment
 from http import HTTPStatus
 
 
-@pytest.mark.django_db
 def test_user_can_create_comment(author_client, author, form_data, news):
     url = reverse('news:detail', args=(news.pk,))
     response = author_client.post(url, data=form_data)
@@ -17,7 +15,6 @@ def test_user_can_create_comment(author_client, author, form_data, news):
     assert new_comment.author == author
 
 
-@pytest.mark.django_db
 def test_other_users_cant_create_comment(client, form_data, news):
     url = reverse('news:detail', args=(news.pk,))
     response = client.post(url, data=form_data)
@@ -27,7 +24,6 @@ def test_other_users_cant_create_comment(client, form_data, news):
     assert Comment.objects.count() == 0
 
 
-@pytest.mark.django_db
 def test_user_can_edit_comment(author_client, news, form_data, comment):
     url = reverse('news:edit', args=(comment.pk,))
     response = author_client.post(url, data=form_data)
@@ -37,7 +33,6 @@ def test_user_can_edit_comment(author_client, news, form_data, comment):
     assert comment.text == form_data['text']
 
 
-@pytest.mark.django_db
 def test_other_users_cant_edit_comment(not_author_client, form_data, comment):
     url = reverse('news:edit', args=(comment.pk,))
     response = not_author_client.post(url, data=form_data)
@@ -46,7 +41,6 @@ def test_other_users_cant_edit_comment(not_author_client, form_data, comment):
     assert comment.text == comment_from_db.text
 
 
-@pytest.mark.django_db
 def test_user_can_delete_comment(author_client, comment, news):
     url = reverse('news:delete', args=(comment.pk,))
     response = author_client.delete(url)
@@ -55,7 +49,6 @@ def test_user_can_delete_comment(author_client, comment, news):
     assert Comment.objects.count() == 0
 
 
-@pytest.mark.django_db
 def test_other_users_cant_delete_comment(not_author_client, comment):
     url = reverse('news:delete', args=(comment.pk,))
     response = not_author_client.delete(url)
