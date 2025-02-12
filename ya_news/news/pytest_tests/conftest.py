@@ -4,6 +4,7 @@ from news.models import News, Comment
 from datetime import timedelta
 from django.utils import timezone
 from yanews import settings
+from django.urls import reverse
 
 
 @pytest.fixture(autouse=True)
@@ -55,8 +56,16 @@ def comment(news, author):
 
 
 @pytest.fixture
-def pk_for_comment(comment):
-    return (comment.pk,)
+def all_urls(news, comment):
+    return {
+        'home': reverse('news:home'),
+        'detail': reverse('news:detail', args=(news.pk,)),
+        'delete': reverse('news:delete', args=(comment.pk,)),
+        'edit': reverse('news:edit', args=(comment.pk,)),
+        'login': reverse('users:login'),
+        'logout': reverse('users:logout'),
+        'signup': reverse('users:signup')
+    }
 
 
 @pytest.fixture

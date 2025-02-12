@@ -1,50 +1,26 @@
-from django.test import TestCase
-from django.urls import reverse
-from notes.models import Note
-from django.contrib.auth import get_user_model
+from .test_base import BaseTest
 from notes.forms import NoteForm
 
 
-User = get_user_model()
-
-
-class TestNotesList(TestCase):
-
-    @classmethod
-    def setUpTestData(cls):
-        cls.list_url = reverse('notes:list')
-        cls.author = User.objects.create(
-            username='testuser'
-        )
-        cls.guest = User.objects.create(
-            username='guest'
-        )
-        cls.note = Note.objects.create(
-            title='Test note',
-            text='Test text',
-            author=cls.author
-        )
-
+class TestNotesList(BaseTest):
     def test_notes_list(self):
-        users = (
-            (self.author, True),
-            (self.guest, False)
+        cases = (
+            (self.auth_client, True),
+            (self.guest_client, False)
         )
-        for user, note_in_list in users:
-            with self.subTest(user=user):
-                self.client.force_login(user)
-                response = self.client.get(self.list_url)
+        for client, note_in_list in cases:
+            with self.subTest():
+                response = client.get(self.LIST_NOTES_URL)
                 object_list = response.context['object_list']
                 self.assertEqual((self.note in object_list), note_in_list)
 
-    def test_authorized_cliend_has_form(self):
-        self.client.force_login(self.author)
+    def test_authorized_client_has_form(self):
         urls = (
-            ('notes:add', None),
-            ('notes:edit', (self.note.slug,))
+            self.ADD_NOTE_URL,
+            self.EDIT_URL
         )
-        for url, args in urls:
+        for url in urls:
             with self.subTest(url=url):
-                response = self.client.get(reverse(url, args=args))
+                response = self.auth_client.get(url)
                 self.assertIn('form', response.context)
                 self.assertIsInstance(response.context['form'], NoteForm)
