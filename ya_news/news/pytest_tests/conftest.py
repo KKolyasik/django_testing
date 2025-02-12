@@ -56,16 +56,38 @@ def comment(news, author):
 
 
 @pytest.fixture
-def all_urls(news, comment):
-    return {
-        'home': reverse('news:home'),
-        'detail': reverse('news:detail', args=(news.pk,)),
-        'delete': reverse('news:delete', args=(comment.pk,)),
-        'edit': reverse('news:edit', args=(comment.pk,)),
-        'login': reverse('users:login'),
-        'logout': reverse('users:logout'),
-        'signup': reverse('users:signup')
-    }
+def url_home():
+    return reverse('news:home')
+
+
+@pytest.fixture
+def url_detail(news):
+    return reverse('news:detail', args=(news.pk,))
+
+
+@pytest.fixture
+def url_delete(comment):
+    return reverse('news:delete', args=(comment.pk,))
+
+
+@pytest.fixture
+def url_edit(comment):
+    return reverse('news:edit', args=(comment.pk,))
+
+
+@pytest.fixture
+def url_login():
+    return reverse('users:login')
+
+
+@pytest.fixture
+def url_logout():
+    return reverse('users:logout')
+
+
+@pytest.fixture
+def url_signup():
+    return reverse('users:signup')
 
 
 @pytest.fixture

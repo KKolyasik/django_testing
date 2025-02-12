@@ -53,6 +53,8 @@ class BaseTest(TestCase):
             author=cls.user
         )
 
+        cls.INITIAL_COUNT = Note.objects.count()
+
         # Динамические URL, зависящие от созданных данных
         cls.DETAIL_URL = cls.detail_url(cls.note.slug)
         cls.EDIT_URL = cls.edit_url(cls.note.slug)
@@ -69,7 +71,7 @@ class BaseTest(TestCase):
 
         # Форма
         cls.form_data = {
-            'text': cls.NOTE_TEXT,
-            'title': cls.NOTE_TITLE,
+            'text': 'Another text',
+            'title': 'Another title',
             'slug': 'another-test-note'
         }
